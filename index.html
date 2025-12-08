@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Student Scores</title>
+  <style>
+    body { font-family: Arial; max-width: 400px; margin: auto; }
+    #result { margin-top: 20px; padding: 10px; border: 1px solid #ccc; }
+  </style>
+</head>
+<body>
+
+<h2>Check Your Scores</h2>
+
+<input id="studentNo" type="text" placeholder="Enter Student Number" style="width:100%;padding:8px;">
+<button onclick="checkScores()" style="width:100%;margin-top:10px;padding:10px;">Submit</button>
+
+<div id="result"></div>
+
+<script>
+const API_URL = "https://script.google.com/macros/s/AKfycbx-EtMbMHX627JvSnpC4V9djo33ImvrRwYaHSPIOWB5wZADtAUw6b2-izQefsvH53kgQg/exec";
+
+function checkScores() {
+    const sn = document.getElementById("StudentNo").value;
+    
+    fetch(`${API_URL}?student=${sn}`)
+        .then(r => r.json())
+        .then(data => {
+            if (!data.StudentNo) {
+                document.getElementById("result").innerHTML = "<b>No record found.</b>";
+                return;
+            }
+            let html = "<h3>Scores</h3>";
+            for (let key in data) {
+                html += `<b>${key}</b>: ${data[key]}<br>`;
+            }
+            document.getElementById("result").innerHTML = html;
+        });
+}
+</script>
+
+</body>
+</html>
