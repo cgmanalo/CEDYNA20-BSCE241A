@@ -1,4 +1,4 @@
-<h2>Check Your Quiz and Exam Scores</h2>
+<h2>Check Activity, Interim & Exam Scores and Running Grade</h2>
 
 <label for="section">Select Section:</label>
 <select id="section">
@@ -12,14 +12,14 @@
 <input type="text" id="studentNumber" placeholder="Enter student number">
 <br><br>
 
-<button onclick="fetchScores()">View My Scores</button>
+<button onclick="fetchScores()">View Scores and Running Grade</button>
 
 <hr>
 
 <div id="output"></div>
 
 <script>
-const API_URL = "YOUR_API_URL_HERE";
+const API_URL = "https://script.google.com/macros/s/AKfycbz7kYkayYW06a9d4jQZObLO8WniZSdcnYBfiuj81QArjFanoR5ZSzlJ0xKXxUDXlRWY7A/exec";
 
 async function fetchScores() {
     const section = document.getElementById("section").value;
@@ -71,6 +71,7 @@ async function fetchScores() {
     }
 }
 </script>
+
 
 
 
