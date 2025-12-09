@@ -1,45 +1,78 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Scores</title>
-  <style>
-    body { font-family: Arial; max-width: 400px; margin: auto; }
-    #result { margin-top: 20px; padding: 10px; border: 1px solid #ccc; }
-  </style>
-</head>
-<body>
+<h2>Check Your Quiz and Exam Scores</h2>
 
-<h2>Check Your Scores</h2>
+<label for="section">Select Section:</label>
+<select id="section">
+  <option value="">-- Select Section --</option>
+  <option value="BSCE241A">BSCE241A</option>
+  <option value="BSCE241B">BSCE241B</option>
+</select>
+<br><br>
 
-<input id="StudentNo" type="text" placeholder="Enter Student Number" style="width:100%;padding:8px;">
-<button onclick="checkScores()" style="width:100%;margin-top:10px;padding:10px;">Submit</button>
+<label for="studentNumber">Student Number:</label>
+<input type="text" id="studentNumber" placeholder="Enter student number">
+<br><br>
 
-<div id="result"></div>
+<button onclick="fetchScores()">View My Scores</button>
+
+<hr>
+
+<div id="output"></div>
 
 <script>
-const API_URL = "https://script.google.com/macros/s/AKfycbz7kYkayYW06a9d4jQZObLO8WniZSdcnYBfiuj81QArjFanoR5ZSzlJ0xKXxUDXlRWY7A/exec";
+const API_URL = "YOUR_API_URL_HERE";
 
-function checkScores() {
-    const sn = document.getElementById("StudentNo").value;
-    
-    fetch(`${API_URL}?student=${sn}`)
-        .then(r => r.json())
-        .then(data => {
-            if (!data.StudentNo) {
-                document.getElementById("result").innerHTML = "<b>No record found.</b>";
-                return;
-            }
-            let html = "<h3>Scores</h3>";
-            for (let key in data) {
-                html += `<b>${key}</b>: ${data[key]}<br>`;
-            }
-            document.getElementById("result").innerHTML = html;
-        });
+async function fetchScores() {
+    const section = document.getElementById("section").value;
+    const studentNumber = document.getElementById("studentNumber").value.trim();
+
+    // Clear display area
+    document.getElementById("output").innerHTML = "";
+
+    // Validate inputs
+    if (!section) {
+        document.getElementById("output").innerHTML = "<p style='color:red;'>Please select a section.</p>";
+        return;
+    }
+    if (!studentNumber) {
+        document.getElementById("output").innerHTML = "<p style='color:red;'>Please enter your student number.</p>";
+        return;
+    }
+
+    // Build request URL
+    const url = `${API_URL}?section=${encodeURIComponent(section)}&student=${encodeURIComponent(studentNumber)}`;
+
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        // If API returned an error
+        if (data.error) {
+            document.getElementById("output").innerHTML =
+                `<p style='color:red;'>${data.error}</p>`;
+            return;
+        }
+
+        // Build table of results
+        let html = "<table border='1' cellpadding='8' style='border-collapse:collapse;'>";
+        html += "<tr><th>Field</th><th>Value</th></tr>";
+
+        for (let key in data) {
+            html += `<tr><td>${key}</td><td>${data[key]}</td></tr>`;
+        }
+
+        html += "</table>";
+
+        document.getElementById("output").innerHTML = html;
+
+    } catch (err) {
+        document.getElementById("output").innerHTML =
+            "<p style='color:red;'>Error fetching data. Please try again.</p>";
+        console.error(err);
+    }
 }
 </script>
 
-</body>
-</html>
+
 
 
 
